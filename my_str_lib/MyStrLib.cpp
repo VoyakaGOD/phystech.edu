@@ -1,6 +1,12 @@
 #include "MyStrLib.hpp"
 
-//////////////////
+int mputs(const char *string)
+{
+    for(size_t i = 0; string[i]; i++)
+        putchar(string[i]);
+    putchar('\n');
+    return 1;
+}
 
 char *strchr(char *string, int symbol)
 {
@@ -54,7 +60,24 @@ char *strncat(char *dest, const char *src, size_t num)
     return strncpy(dest + strlen(dest), src, num);
 }
 
-//////////////////
+char *getline(char *string, char end, int limit, FILE *file)
+{
+    int c;
+    char *ptr = string;
+    while((c = getc(file)) != EOF && (--limit) > 0)
+    {
+        *(ptr++) = c;
+        if(c == end)
+            break;
+    }
+    *ptr = '\0';
+    return (c == EOF && ptr == string) ? NULL : string;
+}
+
+char *mfgets(char *string, int num, FILE *file)
+{
+    return getline(string, '\n', num, file);
+}
 
 char *strdup(const char *src)
 {

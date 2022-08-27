@@ -6,14 +6,20 @@ int main()
     const char *hw = "Hello, world!";
     char str[128];
     strncpy(str, hw, 7);
-    printf("%s\n", str);
+    mputs(str);
     strncat(str, hw, 7);
     strcat(str, hw);
-    printf("%s\n", str);
+    mputs(str);
 
     char *dup = strdup(hw);
     dup[7] = 'W';
-    printf(dup);
+    mputs(dup);
+    free(dup);
+
+    char input[128];
+    mfgets(input, 128, stdin);
+    strcat(input, hw);
+    mputs(input);
 
     getchar();
 }
