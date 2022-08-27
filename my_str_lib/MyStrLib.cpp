@@ -26,26 +26,29 @@ size_t strlen(const char * string)
 
 char *strcpy(char *dest, const char *src)
 {
-    size_t ptr = 0;
+    size_t index = 0;
     do
     {
-        dest[ptr] = src[ptr];
+        dest[index] = src[index];
     }
-    while(src[ptr++]);
+    while(src[index++]);
     return dest;
 }
 
 char *strncpy(char *dest, const char *src, size_t num)
 {
-    size_t ptr = 0;
+    if(num == 0)
+        return dest;
+    
+    size_t index = 0;
     do
     {
-        dest[ptr] = src[ptr];
+        dest[index] = src[index];
     }
-    while(src[ptr++] && (--num));
+    while(src[index++] && (--num));
 
-    if (!num && !src[ptr - 1])
-        dest[ptr] = '\0';
+    if (!num && !src[index - 1])
+        dest[index] = '\0';
 
     return dest;
 }
@@ -62,16 +65,19 @@ char *strncat(char *dest, const char *src, size_t num)
 
 char *getline(char *string, char end, int limit, FILE *file)
 {
-    int c;
-    char *ptr = string;
-    while((c = getc(file)) != EOF && (--limit) > 0)
+    if(limit == 0)
+        return string;
+
+    int symbol = 0;
+    char *index = string;
+    while((symbol = getc(file)) != EOF && (--limit) > 0)
     {
-        *(ptr++) = c;
-        if(c == end)
+        *(index++) = symbol;
+        if(symbol == end)
             break;
     }
-    *ptr = '\0';
-    return (c == EOF && ptr == string) ? NULL : string;
+    *index = '\0';
+    return (symbol == EOF && index == string) ? NULL : string;
 }
 
 char *mfgets(char *string, int num, FILE *file)
