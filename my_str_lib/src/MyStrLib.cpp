@@ -65,7 +65,7 @@ char *strncat(char *dest, const char *src, size_t num)
 
 char *strdup(const char *src)
 {
-    char *duplicate = (char*)malloc((strlen(src) + 1) * sizeof(char));
+    char *duplicate = (char*)calloc((strlen(src) + 1), sizeof(char));
     return strcpy(duplicate, src);
 }
 
