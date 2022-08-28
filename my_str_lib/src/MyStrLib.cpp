@@ -1,21 +1,5 @@
 #include "MyStrLib.hpp"
 
-int mputs(const char *string)
-{
-    for(size_t i = 0; string[i]; i++)
-        putchar(string[i]);
-    putchar('\n');
-    return 1;
-}
-
-char *strchr(char *string, int symbol)
-{
-    for(size_t i = 0; string[i]; i++)
-        if (string[i] == symbol)
-            return string + i;
-    return NULL;
-}
-
 size_t strlen(const char * string)
 {
     size_t len = 0;
@@ -53,6 +37,22 @@ char *strncpy(char *dest, const char *src, size_t num)
     return dest;
 }
 
+char *strchr(char *string, int symbol)
+{
+    for(size_t i = 0; string[i]; i++)
+        if (string[i] == symbol)
+            return string + i;
+    return NULL;
+}
+
+int strcmp(const char *string1, const char *string2)
+{
+    size_t index = 0;
+    while(string1[index] == string2[index] && string1[index])
+        index++;
+    return string1[index] - string2[index];
+}
+
 char *strcat(char *dest, const char *src)
 {
     return strcpy(dest + strlen(dest), src);
@@ -61,6 +61,20 @@ char *strcat(char *dest, const char *src)
 char *strncat(char *dest, const char *src, size_t num)
 {
     return strncpy(dest + strlen(dest), src, num);
+}
+
+char *strdup(const char *src)
+{
+    char *duplicate = (char*)malloc((strlen(src) + 1) * sizeof(char));
+    return strcpy(duplicate, src);
+}
+
+int mputs(const char *string)
+{
+    for(size_t i = 0; string[i]; i++)
+        putchar(string[i]);
+    putchar('\n');
+    return 1;
 }
 
 char *getline(char *string, char end, int limit, FILE *file)
@@ -83,10 +97,4 @@ char *getline(char *string, char end, int limit, FILE *file)
 char *mfgets(char *string, int num, FILE *file)
 {
     return getline(string, '\n', num, file);
-}
-
-char *strdup(const char *src)
-{
-    char *duplicate = (char*)malloc((strlen(src) + 1) * sizeof(char));
-    return strcpy(duplicate, src);
 }

@@ -21,5 +21,7 @@ int main()
     strcat(input, hw);
     mputs(input);
 
+    printf("%d\n", strcmp("ABC", "ABE"));
+
     getchar();
 }
