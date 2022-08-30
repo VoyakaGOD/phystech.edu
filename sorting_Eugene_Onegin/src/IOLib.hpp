@@ -1,14 +1,14 @@
 #ifndef IOLIB_HEADER
 #define IOLIB_HEADER
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <wchar.h>
 
-char *ReadLine(FILE *file);
+wchar_t *ReadLine(FILE *file);
 
-char **ReadAllLines(FILE *file);
+wchar_t **ReadAllLines(const char *fileName, size_t *linesCount);
 
-void WriteLine(FILE *file, const char *line);
-
-void WriteAllLines(FILE *file, const char **lines);
+void WriteAllLines(const char *fileName, const wchar_t **lines, size_t linesCount);
 
 #endif //IOLIB_HEADER

@@ -6,9 +6,10 @@ const char *DestinationFileName = "sorted.txt";
 
 int main()
 {
-    char **lines = ReadAllLines(SourceFileName);
+    size_t linesCount = 0;
+    const wchar_t **lines = (const wchar_t **)ReadAllLines(SourceFileName, &linesCount);
 
-    SortLines(lines);
+    SortLines(lines, linesCount);
 
-    WriteAllLines(DestinationFileNam, lines);
+    WriteAllLines(DestinationFileName, lines, linesCount);
 }
