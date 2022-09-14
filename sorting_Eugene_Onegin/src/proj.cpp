@@ -6,10 +6,23 @@ const char *DestinationFileName = "sorted.txt";
 
 int main()
 {
-    size_t linesCount = 0;
-    const wchar_t **lines = (const wchar_t **)ReadAllLines(SourceFileName, &linesCount);
+    char *text = ReadFile(SourceFileName);
+    if(text == NULL)
+    {
+        printf("Troubles with input file.");
+        return -1;
+    }
+
+    long linesCount = 0;
+    const char **lines = (const char **)SeparateLines(text, &linesCount);
 
     SortLines(lines, linesCount);
 
-    WriteAllLines(DestinationFileName, lines, linesCount);
+    if(WriteLines(DestinationFileName, lines, linesCount))
+    {
+        printf("Troubles with output file.");
+        return -1;
+    }
+
+    return 0;
 }

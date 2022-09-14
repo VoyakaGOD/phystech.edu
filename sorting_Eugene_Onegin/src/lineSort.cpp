@@ -1,16 +1,17 @@
 #include "lineSort.hpp"
 
-static int IsRuLetter(wchar_t symbol)
+// for 1251
+static int IsRuLetter(char symbol)
 {
-    return ((L'а' <= symbol) && (symbol <= L'я')) || ((L'А' < symbol) && (symbol <= L'Я'));
+    return ((unsigned char)192 <= (unsigned char)symbol);
 }
 
 static int CompareLines(const void *value1, const void *value2)
 {
     assert(value1 && value2);
 
-    const wchar_t *string1 = *((wchar_t **)value1);
-    const wchar_t *string2 = *((wchar_t **)value2);
+    const char *string1 = *((const char **)value1);
+    const char *string2 = *((const char **)value2);
 
     size_t index1 = 0;
     size_t index2 = 0;
@@ -29,9 +30,12 @@ static int CompareLines(const void *value1, const void *value2)
     return string1[index1] - string2[index2];
 }
 
-void SortLines(const wchar_t **lines, size_t count)
+char SortLines(const char **lines, size_t count)
 {
-    assert(lines);
+    if(lines == NULL)
+        return 1;
 
-    qsort(lines, count, sizeof(wchar_t *), CompareLines);
+    qsort(lines, count, sizeof(char *), CompareLines);
+
+    return 0;
 }

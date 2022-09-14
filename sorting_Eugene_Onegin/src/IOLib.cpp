@@ -1,69 +1,71 @@
 #include "IOLib.hpp"
 
-wchar_t *ReadLine(FILE *file)
+static long GetFileSize(FILE *file)
 {
-    size_t lineSize = 4;
-    size_t index = 0;
-    wchar_t *line = (wchar_t *)calloc(lineSize, sizeof(wchar_t));
+    if(file == NULL)
+        return -1;
 
-    wint_t symbol = 0;
-    do
-    {
-        if(index >= lineSize)
-        {
-            lineSize *= 2;
-            line = (wchar_t *)realloc(line, lineSize * sizeof(wchar_t));
-        }
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    fseek(file, 0, SEEK_SET);
 
-        symbol = fgetwc(file);
-        line[index] = symbol;
-        index++;
-    }
-    while(symbol != WEOF && symbol != L'\n');
-    
-    line[index - 1] = L'\0';
-    return line;
+    return size;
 }
 
-wchar_t **ReadAllLines(const char *fileName, size_t *linesCount)
+char *ReadFile(const char *fileName)
 {
-    size_t count = 0;
-    wchar_t **lines = NULL;
-    FILE *file = fopen(fileName, "r, ccs=UTF-8");
+    FILE *file = fopen(fileName, "r");
     if(file == NULL)
-    {
-        printf("Incorrect file!");
-        getchar();
-        abort();
-    }
+        return NULL;
 
-    while(!feof(file))
-    {
-        lines = (wchar_t **)realloc(lines, (count + 1) * sizeof(wchar_t *));
-        lines[count] = ReadLine(file);
-        count++;
-    }
+    long fileSize = GetFileSize(file);
+
+    char *text = (char *)calloc(fileSize, sizeof(char));
+    fread(text, sizeof(char), fileSize, file);
 
     fclose(file);
+    return text;
+}
+
+char **SeparateLines(char *text, long *linesCount)
+{
+    if(text == NULL)
+        return NULL;
+
+    long count = 1;
+    for(long i = 0; text[i]; i++)
+    {
+        if(text[i] == '\n')
+            count++;
+    }
+
+    long index = 1;
+    char **lines = (char **)calloc(count, sizeof(char *));
+    lines[0] = text;
+    for(long i = 0; text[i]; i++)
+    {
+        if(text[i] == '\n')
+        {
+            lines[index++] = text + i + 1;
+            text[i] = '\0';
+        }
+    }
+
     *linesCount = count;
     return lines;
 }
 
-void WriteAllLines(const char *fileName, const wchar_t **lines, size_t linesCount)
+char WriteLines(const char *fileName, const char **lines, long linesCount)
 {
-    FILE *file = fopen(fileName, "w, ccs=UTF-8");
+    FILE *file = fopen(fileName, "w");
     if(file == NULL)
+        return 1;
+
+    for(long i = 0; i < linesCount; i++)
     {
-        printf("Troubles with output file!");
-        getchar();
-        abort();
+        fputs(lines[i], file);
+        fputc('\n', file);
     }
 
-    for(size_t i = 0; i < linesCount; i++)
-    {
-        fputws(lines[i], file);
-        fputwc(L'\n', file);
-    }
-
-    fclose(file);
+    return 0;
 }

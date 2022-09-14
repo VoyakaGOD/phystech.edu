@@ -3,23 +3,23 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <wchar.h>
 
-/// @brief Read UTF-8 line from file
-/// @param[in] file file, from which we read
-/// @return null-terminated wstring 
-wchar_t *ReadLine(FILE *file);
+/// @brief read all bytes from the file
+/// @param[in] fileName name of the file, from whichwe read
+/// @return null-terminated string or NULL if error has appeared
+char *ReadFile(const char *fileName);
 
-/// @brief Read all UTF-8 lines from file
-/// @param[in] fileName name of the file, from which we read
-/// @param[out] linesCount number of read lines
-/// @return array of null-terminated wstrings
-wchar_t **ReadAllLines(const char *fileName, size_t *linesCount);
+/// @brief separate text to several strings by line ends
+/// @param text the text, we wanna separate, each '\n' change to '\0'
+/// @param[out] linesCount the number of lines in the text
+/// @return array of pointers to each line or NULL if text is NULL
+char **SeparateLines(char *text, long *linesCount);
 
-/// @brief Write UTF-8 lines to file
+/// @brief Write one byte lines to file
 /// @param[in] fileName name of the file, in which we write
-/// @param[in] lines array of null-terminated wstrings
+/// @param[in] lines array of null-terminated strings
 /// @param[in] linesCount number of elements in the array
-void WriteAllLines(const char *fileName, const wchar_t **lines, size_t linesCount);
+/// @return 1 if error has appeared, otherwise 0
+char WriteLines(const char *fileName, const char **lines, long linesCount);
 
 #endif //IOLIB_HEADER
