@@ -35,7 +35,7 @@ char SortLines(const char **lines, size_t count)
     if(lines == NULL)
         return 1;
 
-    qsort(lines, count, sizeof(char *), CompareLines);
+    MySort(lines, count, sizeof(char *), CompareLines);
 
     return 0;
 }

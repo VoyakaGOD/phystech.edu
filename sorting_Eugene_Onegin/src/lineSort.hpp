@@ -1,8 +1,7 @@
 #ifndef LINE_SORT_HEADER
 #define LINE_SORT_HEADER
 
-#include <stdlib.h>
-#include <assert.h>
+#include "mySort.hpp"
 
 /// @brief sorts array of strings taking in account only letters
 /// @param[in] lines array of null-terminated strings
