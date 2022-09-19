@@ -12,13 +12,15 @@ static long GetFileSize(FILE *file)
     return size;
 }
 
-char *ReadFile(const char *fileName)
+char *ReadFile(const char *fileName, size_t *length)
 {
     FILE *file = fopen(fileName, "r");
     if(file == NULL)
         return NULL;
 
     long fileSize = GetFileSize(file);
+    if(length != NULL)
+        *length = fileSize;
 
     char *text = (char *)calloc(fileSize, sizeof(char));
     fread(text, sizeof(char), fileSize, file);
@@ -55,11 +57,27 @@ char **SeparateLines(char *text, long *linesCount)
     return lines;
 }
 
-char WriteLines(const char *fileName, const char **lines, long linesCount)
+char RestoreLineEndings(char *text, long linesCount)
 {
-    FILE *file = fopen(fileName, "w");
-    if(file == NULL)
-        return 1;
+    if(text == NULL)
+        return 0;
+
+    linesCount--;
+    while(linesCount > 0)
+    {
+        if(!(*text))
+        {
+            *text = '\n';
+            linesCount--;
+        }
+        text++;
+    }
+}
+
+char WriteLines(FILE *file, const char **lines, long linesCount)
+{
+    if(lines == NULL)
+        return 0;
 
     for(long i = 0; i < linesCount; i++)
     {

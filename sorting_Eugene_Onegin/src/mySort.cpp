@@ -23,6 +23,21 @@ typedef struct
     char *right;
 } ArrayPart;
 
+static void BubbleSort(char *left, char *right, size_t size, compare_func_t compare)
+{
+    while(right > left)
+    {
+        char *el = left;
+        while(el < right)
+        {
+            if(compare(el, el + size) > 0)
+                Swap(el, el + size, size);
+            el += size;
+        }
+        right -= size;
+    }
+}
+
 void MySort(void *array, size_t count, size_t size, compare_func_t compare)
 {
     ArrayPart stack[stack_size];
@@ -37,6 +52,12 @@ void MySort(void *array, size_t count, size_t size, compare_func_t compare)
         POP(left, right);
         if(right - left < (long)size)
             continue;
+
+        if(stack_top - stack >= stack_size - 2)
+        {
+            BubbleSort(left, right, size, compare);
+            continue;
+        }
 
         char *left0 = left;
         char *right0 = right;
@@ -61,8 +82,6 @@ void MySort(void *array, size_t count, size_t size, compare_func_t compare)
             if(compare(left, right) == 0)
                 right -= size;
         }
-
-        assert(stack_top - stack < stack_size - 2);
         
         PUSH(left0, left);
         PUSH(left + size, right0);
