@@ -5,6 +5,8 @@
 
 typedef int elem_t;
 
+const elem_t stack_poison = 0x00BADFAD;
+
 typedef struct
 {
     size_t capacity;

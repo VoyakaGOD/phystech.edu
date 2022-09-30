@@ -4,7 +4,9 @@ void stack_init(stack_t *stack, size_t capacity)
 {
     stack->capacity = capacity;
     stack->size = 0;
-    stack->data = (elem_t *)calloc(capacity, sizeof(elem_t));
+    stack->data = NULL;
+
+    stack_resize(stack, capacity);
 }
 
 void stack_release(stack_t *stack)
@@ -19,6 +21,9 @@ void stack_resize(stack_t *stack, size_t capacity)
 {
     stack->capacity = capacity;
     stack->data = (elem_t *)realloc(stack->data, capacity);
+
+    for(int index = stack->size; index < capacity; index++)
+        stack->data[index] = stack_poison;
 }
 
 void stack_push(stack_t *stack, elem_t item)
@@ -36,5 +41,7 @@ elem_t stack_peek(stack_t *stack)
 
 elem_t stack_pop(stack_t *stack)
 {
-    return stack->data[--stack->size];
+    elem_t item = stack_peek(stack);
+    stack->data[--stack->size] = stack_poison;
+    return item;
 }
