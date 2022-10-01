@@ -5,4 +5,4 @@ additional information to simplify debug.
 
 ## Usage
 
-Project implements all standart stack funtions.
+Project implements all standart stack functions.
