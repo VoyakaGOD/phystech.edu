@@ -8,6 +8,8 @@ if(err)\
     return value;\
 }\
 
+size_t stack_dump_data_size = 10;
+
 static int errors = 0;
 
 static void stack_resize_impl(stack_t *stack, size_t capacity)
@@ -51,7 +53,7 @@ int stack_verify(stack_t *stack)
     return err;
 }
 
-void stack_init(stack_t *stack, size_t capacity)
+void stack_init(stack_t *stack, size_t capacity, object_origin_t origin)
 {
     errors = 0; 
     if(stack == NULL) 
@@ -63,6 +65,7 @@ void stack_init(stack_t *stack, size_t capacity)
     stack->capacity = capacity;
     stack->size = 0;
     stack->data = NULL;
+    stack->origin = origin;
 
     stack_resize_impl(stack, capacity);
 }
@@ -75,6 +78,7 @@ void stack_release(stack_t *stack)
     stack->size = 0;
     free(stack->data);
     stack->data = NULL;
+    stack->origin = {};
 }
 
 void stack_resize(stack_t *stack, size_t capacity)
@@ -125,22 +129,57 @@ elem_t stack_pop(stack_t *stack)
     return item;
 }
 
-void stack_print_errors()
+void stack_print_errors(FILE *file)
 {
     if(errors & STACK_NULL_PTR)
-        printf("*Pointer to the stack was null.\n");
+        fprintf(file, "*Pointer to the stack was null.\n");
     if(errors & STACK_NULL_DATA)
-        printf("*Pointer to the data of stack was null.\n");
+        fprintf(file, "*Pointer to the data of stack was null.\n");
     if(errors & STACK_NEGATIVE_CAPACITY)
-        printf("*Stack have negative capacity.\n");
+        fprintf(file, "*Stack have negative capacity.\n");
     if(errors & STACK_NEGATIVE_SIZE)
-        printf("*Stack have negative size.\n");
+        fprintf(file, "*Stack have negative size.\n");
     if(errors & STACK_OVERFLOW)
-        printf("*Size of the stack greater than capacity.\n");
+        fprintf(file, "*Size of the stack greater than capacity.\n");
     if(errors & STACK_BAD_ALLOC)
-        printf("*Problems with memory allocation.\n");
+        fprintf(file, "*Problems with memory allocation.\n");
     if(errors & STACK_GET_ITEM_FROM_EMPTY)
-        printf("*Try to pop or peek item from empty stack.\n");
+        fprintf(file, "*Try to pop or peek item from empty stack.\n");
     if(errors & STACK_BAD_RESIZE)
-        printf("*New stack capacity is lower than size.\n");
+        fprintf(file, "*New stack capacity is lower than size.\n");
+}
+
+void stack_dump(stack_t *stack)
+{
+    errors = 0;
+    if(stack == NULL) 
+    { 
+        errors = STACK_NULL_PTR; 
+        return; 
+    }
+
+    int err = stack_verify(stack);
+    fprintf(log_file, "stack[%p](%s) \"%s\" at %s() at %s(%d):\n", stack, err == 0 ? "ok" : "err", 
+    stack->origin.name, stack->origin.function, stack->origin.file, stack->origin.line);
+    fprintf(log_file, "{\n");
+    fprintf(log_file, "    size = %d\n", stack->size);
+    fprintf(log_file, "    capacity = %d\n", stack->capacity);
+    fprintf(log_file, "    data[%p]\n", stack->data);
+    if(stack->data != NULL)
+    {
+        int items_count = stack->capacity;
+        if(stack_dump_data_size >= 0 && stack_dump_data_size < stack->capacity)
+            items_count = stack_dump_data_size;
+        
+        fprintf(log_file, "    {\n");
+        for(int i = 0; i < items_count; i++)
+        {
+            if(stack->data[i] == stack_poison)
+                fprintf(log_file, "        %x\n", stack->data[i]);
+            else
+                fprintf(log_file, "        %d\n", stack->data[i]);
+        }
+        fprintf(log_file, "    }\n");
+    }
+    fprintf(log_file, "}\n");
 }

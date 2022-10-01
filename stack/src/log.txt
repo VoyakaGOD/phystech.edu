@@ -1,0 +1,34 @@
+main() at test.cpp(17):
+stack[0061FEEC](ok) "stack" at main() at test.cpp(9):
+{
+    size = 5
+    capacity = 8
+    data[00C12FA0]
+    {
+        0
+        5
+        10
+        15
+        20
+        badfad
+        badfad
+        badfad
+    }
+}
+main() at test.cpp(21):
+stack[0061FEEC](ok) "stack" at main() at test.cpp(9):
+{
+    size = 0
+    capacity = 8
+    data[00C12FA0]
+    {
+        badfad
+        badfad
+        badfad
+        badfad
+        badfad
+        badfad
+        badfad
+        badfad
+    }
+}
