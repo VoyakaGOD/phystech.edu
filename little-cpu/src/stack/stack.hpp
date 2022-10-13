@@ -12,7 +12,7 @@ extern size_t stack_dump_data_size;
 
 typedef long long elem_t;
 
-const elem_t stack_poison = 0x00BADFAD;
+const elem_t stack_poison = 0x00BADFAD00BADFAD;
 
 enum stack_error
 {

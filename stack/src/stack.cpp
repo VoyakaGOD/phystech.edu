@@ -15,7 +15,7 @@ static int errors = 0;
 static void stack_resize_impl(stack_t *stack, size_t capacity)
 {
     stack->capacity = capacity;
-    stack->data = (elem_t *)realloc(stack->data, capacity);
+    stack->data = (elem_t *)realloc(stack->data, capacity * sizeof(elem_t));
     if(stack->data == NULL)
     {
         errors |= STACK_BAD_ALLOC;

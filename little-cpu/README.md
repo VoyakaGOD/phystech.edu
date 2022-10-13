@@ -36,7 +36,7 @@ You can build the program using the make utility.
 
 ### Firstly you should assemble program with casm.
 
-$casm [file]
+$casm [src] [dst]
 
 Then you can run assembled file with lcpu.
 
@@ -44,4 +44,4 @@ $lcpu [file]
 
 Also you can disassemble assembled files with dasm.
 
-$dasm [file]
+$dasm [src] [dst]
