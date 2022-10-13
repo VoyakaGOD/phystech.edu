@@ -11,19 +11,33 @@ typedef struct
     size_t size;
 } code_t;
 
+typedef struct 
+{
+    long long RIP;
+    long long RAX;
+    long long RBX;
+    long long RCX;
+    long long RDX;
+}regs_t;
+
 typedef struct
 {
+    long long * const RAM;
     code_t code;
     stack_t stack;
-    long long RIP;
+    regs_t regs;
 } context_t;
 
-typedef const char * (*command_t) (context_t *cpu);
+typedef const char * (*command_t) (byte prefix, context_t *ctx);
 
-byte grab_byte(context_t *cpu);
+byte grab_byte(context_t *ctx);
 
-long long grab_value(context_t *cpu);
+long long grab_value(context_t *ctx);
 
-context_t create_context(FILE *file);
+long long load_reg(context_t *ctx, byte index);
+
+void set_reg(context_t *ctx, byte index, long long value);
+
+context_t create_context(FILE *file, size_t stack_capacity, size_t ram_size);
 
 #endif // CPU_TYPES_HEADER
