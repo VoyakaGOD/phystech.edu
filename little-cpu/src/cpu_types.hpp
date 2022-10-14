@@ -13,11 +13,11 @@ typedef struct
 
 typedef struct 
 {
-    long long RIP;
     long long RAX;
     long long RBX;
     long long RCX;
     long long RDX;
+    long long RIP;
 }regs_t;
 
 typedef struct

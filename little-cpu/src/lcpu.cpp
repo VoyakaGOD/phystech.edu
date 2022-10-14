@@ -5,7 +5,7 @@ void lcpu(context_t *cpu, command_t *commands, const byte commands_count)
 {
     while(true)
     {
-        //printf("RIP: %lld, stack: %ld\n", cpu->RIP, cpu->stack.size);
+        //printf("RIP: %lld, stack: %ld\n", cpu->regs.RIP, cpu->stack.size);
         if(cpu->regs.RIP >= cpu->code.size)
         {
             printf("Unexpected end of code...\n");
@@ -59,7 +59,16 @@ int main(int argc, char* argv[])
         cpu_cmd_out,       //6
         cpu_cmd_dup,       //7
         cpu_cmd_halt,      //8
-        cpu_cmd_pop        //9
+        cpu_cmd_pop,       //9
+        cpu_cmd_div,       //10
+        cpu_cmd_mod,       //11
+        cpu_cmd_jmp,       //12
+        cpu_cmd_je,        //13
+        cpu_cmd_jne,       //14
+        cpu_cmd_jg,        //15
+        cpu_cmd_jge,       //16
+        cpu_cmd_jl,        //17
+        cpu_cmd_jle        //18
     };
 
     lcpu(&context, commands, sizeof(commands) / sizeof(command_t));

@@ -1,5 +1,23 @@
 #include "cpu_commands.hpp"
 
+#define CONDITIONAL_JMP_CMD(name, v) const char *name(byte prefix, context_t *ctx)\
+{\
+    long long right = stack_pop(&ctx->stack);\
+    long long left = stack_pop(&ctx->stack);\
+    long long arg = grab_value(ctx);\
+    if(left v right)\
+        ctx->regs.RIP = arg;\
+    return NULL;\
+}
+
+#define MATH_CMD(name, op) const char *name(byte prefix, context_t *ctx)\
+{\
+    long long right = stack_pop(&ctx->stack);\
+    long long left = stack_pop(&ctx->stack);\
+    stack_push(&ctx->stack, left op right);\
+    return NULL;\
+}
+
 static const byte IMMEDIATE_PREFIX = 0x00;
 static const byte RAM_PREFIX = 0x40;
 static const byte REG_PREFIX = 0x80;
@@ -36,44 +54,15 @@ const char *cpu_cmd_pop(byte prefix, context_t *ctx)
     return NULL;
 }
 
-const char *cpu_cmd_add(byte prefix, context_t *ctx)
-{
-    if(ctx->stack.size < 2)
-        return "Not enough items to add!";
+MATH_CMD(cpu_cmd_add, +)
 
-    long long left = stack_pop(&ctx->stack);
-    long long right = stack_pop(&ctx->stack);
+MATH_CMD(cpu_cmd_sub, -)
 
-    stack_push(&ctx->stack, left + right);
+MATH_CMD(cpu_cmd_mul, *)
 
-    return NULL;
-}
+MATH_CMD(cpu_cmd_div, /)
 
-const char *cpu_cmd_sub(byte prefix, context_t *ctx)
-{
-    if(ctx->stack.size < 2)
-        return "Not enough items to sub!";
-
-    long long left = stack_pop(&ctx->stack);
-    long long right = stack_pop(&ctx->stack);
-
-    stack_push(&ctx->stack, left - right);
-
-    return NULL;
-}
-
-const char *cpu_cmd_mul(byte prefix, context_t *ctx)
-{
-    if(ctx->stack.size < 2)
-        return "Not enough items to mul!";
-
-    long long left = stack_pop(&ctx->stack);
-    long long right = stack_pop(&ctx->stack);
-
-    stack_push(&ctx->stack, left * right);
-
-    return NULL;
-}
+MATH_CMD(cpu_cmd_mod, %)
 
 const char *cpu_cmd_in(byte prefix, context_t *ctx)
 {
@@ -98,6 +87,25 @@ const char *cpu_cmd_dup(byte prefix, context_t *ctx)
 
     return NULL;
 }
+
+const char *cpu_cmd_jmp(byte prefix, context_t *ctx)
+{
+    ctx->regs.RIP = grab_value(ctx);
+
+    return NULL;
+}
+
+CONDITIONAL_JMP_CMD(cpu_cmd_je, ==)
+
+CONDITIONAL_JMP_CMD(cpu_cmd_jne, ==)
+
+CONDITIONAL_JMP_CMD(cpu_cmd_jg, >)
+
+CONDITIONAL_JMP_CMD(cpu_cmd_jge, >=)
+
+CONDITIONAL_JMP_CMD(cpu_cmd_jl, <)
+
+CONDITIONAL_JMP_CMD(cpu_cmd_jle, <=)
 
 const char *cpu_cmd_halt(byte prefix, context_t *ctx)
 {
